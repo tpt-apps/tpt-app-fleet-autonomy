@@ -1,0 +1,136 @@
+# TPT App — Fleet Autonomy Suite
+
+**Repository:** `tpt-app-fleet-autonomy`  
+**Codename:** Fleet  
+**License:** Dual MIT OR Apache-2.0  
+**Status:** Design  
+
+**Primary foundation crates used:**  
+`tpt-swarm` · `tpt-perception` · `tpt-control` · `tpt-keystone-db` · `tpt-appfront` · `tpt-anima` (light) · `tpt-math` · light use of `tpt-primitives` and `tpt-crypto`
+
+---
+
+## 1. Purpose & Vision
+
+A complete offline / local-network desktop environment for designing, simulating, deploying and managing fleets of robots and drones.
+
+It provides an end-to-end workflow from simulation to real hardware, with shared learning, sensor fusion, capability-based control and multi-agent coordination — all without requiring a cloud service.
+
+Target users: robotics labs, universities, small autonomy companies, research groups and advanced hobbyist teams who currently stitch together ROS tools, custom dashboards, simulation environments and cloud services.
+
+The same codebase is released as open source (MIT OR Apache-2.0) and packaged as convenient pre-built binaries sold on Gumroad.
+
+---
+
+## 2. Problem Statement
+
+Fleet-level robotics today usually involves:
+
+- Separate tools for simulation, fleet management, perception and control
+- Heavy dependence on ROS tooling that is powerful but operationally complex
+- Cloud services for coordination or learning that introduce latency, cost and data-exfiltration risk
+- Weak story for moving an entire fleet configuration between sites or air-gapped environments
+
+There is no polished, offline-capable, memory-safe suite that treats the full fleet lifecycle as a single coherent product.
+
+---
+
+## 3. Solution Overview
+
+| Capability                  | Source Repo(s)              | Role                                              |
+|-----------------------------|-----------------------------|---------------------------------------------------|
+| Fleet middleware & orchestration | tpt-swarm                | Hardware-agnostic agent, skill registry, federated learning, simulation-to-deployment |
+| Perception & sensor fusion  | tpt-perception              | Point clouds, multi-sensor fusion, spatial registration |
+| Control                     | tpt-control                 | State estimation, classical/optimal control, MPC helpers |
+| Local storage               | tpt-keystone-db             | Fleet state, logs, skill versions, experiment data |
+| Light multi-agent layer     | tpt-anima (subset)          | Negotiation and coordination between higher-level agents |
+| UI                          | tpt-appfront                | Unified native desktop interface                  |
+| Numerics                    | tpt-math                    | Supporting mathematics                            |
+
+Users work with “Fleet Projects” that contain robot definitions, skills, simulation worlds, deployment configurations and live/observed state. Everything can run fully offline or on a local network.
+
+---
+
+## 4. Core Features
+
+### MVP (v1.0)
+
+- Fleet and robot definition management
+- Basic simulation integration and scenario setup
+- Skill registry and simple deployment to simulated or real robots
+- Local Keystone database for fleet state and history
+- Sensor visualisation and basic fusion views
+- Capability-based permission model for what each robot/agent may do
+- Export / import of complete fleet projects
+- Fully offline + LAN operation
+- Native desktop binaries (Windows, macOS, Linux)
+
+### Later versions (no commitment)
+
+- Richer federated learning workflows
+- Advanced perception pipelines
+- Visual skill and behaviour editors
+- Stronger multi-agent negotiation
+- Hardware-in-the-loop improvements
+- Headless fleet server mode
+
+---
+
+## 5. Licensing & Dependency Rules
+
+- Application is dual-licensed MIT OR Apache-2.0.
+- All dependencies must be compatible with both MIT and Apache-2.0 (no Apache-only crates).
+- Foundation crates already under dual licence are used directly.
+
+---
+
+## 6. Security & Privacy Model
+
+- All fleet data and control stay local or on the user-controlled network by default.
+- No telemetry, no mandatory cloud accounts.
+- Robots and higher-level agents operate under explicit capabilities.
+- Fleet project packages can be encrypted on export.
+- Suitable for air-gapped or sensitive environments.
+
+---
+
+## 7. Distribution Model
+
+1. **Open Source**  
+   Full source available under MIT OR Apache-2.0. Anyone can build it.
+
+2. **Gumroad**  
+   Pre-built, signed binaries + installer sold as a one-time purchase.  
+   No updates are promised.  
+   Purchasers may submit approved error reports that may be considered for a future major release.
+
+Buyers do not need to know the source is open.
+
+---
+
+## 8. Non-Goals (v1)
+
+- Cloud fleet-management SaaS
+- Support for every possible robot vendor on day one
+- Guaranteed ongoing updates or support
+- Mobile application
+- Full replacement for every specialised ROS tool on day one
+
+---
+
+## 9. Success Criteria
+
+- A small team can define a fleet, run it in simulation, and deploy a basic skill to real or simulated hardware without any cloud service
+- An entire fleet project can be moved between machines or sites cleanly
+- The application remains usable fully offline or on an isolated LAN
+- The same codebase serves both open-source builders and Gumroad customers
+
+---
+
+## 10. Open Questions
+
+- Exact depth of ROS2 interoperation in the MVP
+- Preferred simulation backends to support first
+- How much of the federated learning surface to expose in v1
+- Desktop shell choice (pure AppFront native vs thin Tauri wrapper)
+- Fleet project package format and signing strategy

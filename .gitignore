@@ -1,0 +1,22 @@
+# Rust
+/target/
+**/*.rs.bk
+
+# Fleet project data and local state
+*.fleet
+*.key
+*.licence
+*.license-key
+/data/
+/.keystone/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs / temp
+*.log
+*.tmp
