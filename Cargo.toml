@@ -1,0 +1,19 @@
+[workspace]
+resolver = "2"
+members = ["crates/*"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/tpt-apps/tpt-app-fleet-autonomy"
+
+[workspace.dependencies]
+# Foundation crates are pinned by `rev` once the audit (Phase 0) records them.
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["float_roundtrip"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+tempfile = "3"
+# Foundation crate from tpt-math, pinned by rev. The umbrella `tpt-math` crate is not used
+# because `tpt-math-exact` and `tpt-math-prob-dist` do not build at this rev (see docs/ARCHITECTURE.md).
+tpt-math-numeric = { git = "https://github.com/TPT-Solutions/tpt-math", rev = "a6c659d208ffc3a6ed000c38fd1e27a9d56119cc", default-features = false }

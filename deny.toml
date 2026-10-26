@@ -1,0 +1,16 @@
+# cargo-deny configuration. Run: cargo deny check licenses
+# Dependency rule (spec §5): every dependency must be compatible with both MIT and Apache-2.0.
+
+[licenses]
+confidence-threshold = 0.93
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "Unicode-3.0",
+    "Unicode-DFS-2016",
+    "Zlib",
+]
+# Apache-only crates are not allowed (spec §5); anything not listed above fails the check.
