@@ -29,52 +29,54 @@ Source: `spec.txt` (section refs in parentheses), `GUMROAD.md`. Tick boxes as yo
 - [ ] Capability model shape — default: explicit allow-list per robot/agent (e.g. `move`, `actuate:gripper`, `sensor:read:lidar`, `deploy`), enforced at the adapter boundary
 - [ ] Sim fidelity — default: kinematic ground robots + simple quadrotor dynamics, point-cloud/lidar sensor models
 - [ ] Gumroad price, licence-key issuing flow — default: $429 as in `GUMROAD.md`, keys generated offline by a separate tool
+- [ ] `tpt-swarm` is Apache-2.0 only (spec §5 needs dual licence) — default: wrap it behind a trait in `fleet-core` and log it in `docs/ARCHITECTURE.md`; alternatively ask the owner for a dual licence
+- [ ] Copyright holder in `LICENSE-MIT` — default: "The TPT Fleet Autonomy Suite contributors"; replace with the legal entity name if wanted
 
 ## Phase 0 — Workspace & groundwork
 
-- [ ] Cargo workspace root, `rust-toolchain.toml`, `.gitignore`
-- [ ] `LICENSE-MIT`, `LICENSE-APACHE`
-- [ ] Stub crates (build, clippy and test pass)
-- [ ] CI workflow for Windows, macOS, Linux
-- [ ] `git init` (local repo, nothing committed)
+- [x] Cargo workspace root, `rust-toolchain.toml`, `.gitignore`
+- [x] `LICENSE-MIT`, `LICENSE-APACHE`
+- [x] Stub crates (build, clippy and test pass)
+- [x] CI workflow for Windows, macOS, Linux
+- [x] `git init` (local repo, nothing committed)
 - [ ] First commit (after your go-ahead)
 - [ ] Create the GitHub remote (after your go-ahead; confirm org)
-- [ ] Clone and audit the foundation crates: `tpt-swarm`, `tpt-perception`, `tpt-control`, `tpt-keystone-db`, `tpt-appfront`, `tpt-anima`, `tpt-math`, `tpt-primitives`, `tpt-crypto` (existence, licence, build on Windows/macOS/Linux)
-- [ ] Record their public APIs and gaps in `docs/ARCHITECTURE.md`
-- [ ] Pin git dependencies by `rev` in `[workspace.dependencies]`
-- [ ] `deny.toml` and `cargo deny check licenses` passes
+- [~] Clone and audit the foundation crates: `tpt-swarm`, `tpt-perception`, `tpt-control`, `tpt-keystone-db`, `tpt-appfront`, `tpt-anima`, `tpt-math`, `tpt-primitives`, `tpt-crypto` (existence, licence, build on Windows/macOS/Linux) — existence and licence done, Windows build done (3 failing), macOS/Linux pending. See `docs/ARCHITECTURE.md`.
+- [~] Record their public APIs and gaps in `docs/ARCHITECTURE.md` — audit status and blockers recorded; public APIs not yet recorded.
+- [~] Pin git dependencies by `rev` in `[workspace.dependencies]` — `tpt-math-numeric` pinned at `a6c659d`; `tpt-perception` and `tpt-swarm` not yet pinned (they do not build yet, see `docs/ARCHITECTURE.md`)
+- [x] `deny.toml` and `cargo deny check licenses` passes
 - [ ] Confirm foundation crates build with default features off (no cloud, S3, OTLP, etc.)
-- [ ] README with build instructions
+- [x] README with build instructions
 - [ ] Spike: 3D viewport renderer inside `tpt-appfront`
 
 ## Phase 1 — Fleet document & storage (`fleet-core`, `fleet-store`)
 
-- [ ] Define the Fleet Project: robot definitions, skills, worlds, deployment configs, observed state (§3)
-- [ ] Robot definition: id, type (ground/drone), sensors, actuators, adapter, capabilities
-- [ ] Stable IDs (UUID) and serde serialisation; `schema_version` field, refuses newer schemas
-- [ ] Keystone-backed store: fleet state, logs, skill versions, experiment data (§3)
-- [ ] Open / create / save / load / list / delete a project in a local directory
-- [ ] Migration hook (passthrough while only v1 exists)
-- [ ] Unit tests: round-trip, validation, NaN, schema refusal; store tests against the real Keystone engine
-- [ ] History: append-only event log per robot/project
+- [x] Define the Fleet Project: robot definitions, skills, worlds, deployment configs, observed state (§3)
+- [x] Robot definition: id, type (ground/drone), sensors, actuators, adapter, capabilities
+- [x] Stable IDs (UUID) and serde serialisation; `schema_version` field, refuses newer schemas
+- [ ] Keystone-backed store: fleet state, logs, skill versions, experiment data (§3) — not started; a file-backed store is in place. Keystone is server-first with an undocumented library surface, so it needs its own step.
+- [x] Open / create / save / load / list / delete a project in a local directory
+- [x] Migration hook (passthrough while only v1 exists)
+- [~] Unit tests: round-trip, validation, NaN, schema refusal (done for `fleet-core` and the file store); store tests against the real Keystone engine pending
+- [x] History: append-only event log per robot/project
 
 ## Phase 2 — Capability-based permissions (`fleet-caps`)
 
-- [ ] Capability type and per-robot / per-agent grants (§4, §6)
-- [ ] Enforcement point at the adapter and deployment boundary (deny by default)
-- [ ] Audit log of allowed and denied actions in Keystone
-- [ ] Unit tests: deny by default, grant, revoke, escalation attempts
-- [ ] Capability review UI data model
+- [x] Capability type and per-robot / per-agent grants (§4, §6)
+- [~] Enforcement point at the adapter and deployment boundary (deny by default) — `Policy::authorize` is the check; wiring it into adapters and deployment happens in Phases 4 and 6
+- [~] Audit log of allowed and denied actions in Keystone — in-memory audit log in place; Keystone persistence pending
+- [x] Unit tests: deny by default, grant, revoke, escalation attempts
+- [x] Capability review UI data model (`Policy::grants_for`)
 
 ## Phase 3 — Simulation (`fleet-sim`)
 
-- [ ] `SimBackend` trait (step, spawn, sensors, world state)
-- [ ] Built-in backend: 3D world, ground robot kinematics, simple quadrotor dynamics (uses `tpt-control` / `tpt-math`)
-- [ ] World/scenario definitions (obstacles, start poses, goals, duration)
-- [ ] Sensor models: lidar / point cloud, pose, basic camera stub
-- [ ] Deterministic runs (seeded) and scenario replay
-- [ ] Store run results in Keystone
-- [ ] Tests: determinism, collision, control convergence
+- [x] `SimBackend` trait (step, spawn, sensors, world state) — spawn, command, step, state, agents, time; sensors are free functions
+- [~] Built-in backend: 3D world, ground robot kinematics, simple quadrotor dynamics — unicycle ground model and point-mass drone with gravity, integrated by `tpt-math-numeric::ode::rk4_step`. Obstacles are axis-aligned boxes, not a full 3D world. `tpt-control` not used.
+- [x] World/scenario definitions (obstacles, start poses, goals, duration)
+- [~] Sensor models: lidar / point cloud, pose, basic camera stub — horizontal lidar and noisy pose done; point cloud and camera stub not done
+- [x] Deterministic runs (seeded) and scenario replay
+- [~] Store run results in Keystone — saved to `runs/<name>.json` in the project directory (file store); Keystone pending
+- [x] Tests: determinism, collision, control convergence
 
 ## Phase 4 — Skill registry & deployment (`fleet-skills`, `fleet-adapters`)
 
