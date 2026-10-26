@@ -1,0 +1,10 @@
+[package]
+name = "fleet-caps"
+description = "Capability-based permissions for robots and agents in the TPT Fleet Autonomy Suite"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+uuid.workspace = true
