@@ -1,0 +1,16 @@
+[package]
+name = "fleet-sim"
+description = "Built-in simulation backend for the TPT Fleet Autonomy Suite"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+fleet-core = { path = "../fleet-core" }
+tpt-math-numeric.workspace = true
+serde.workspace = true
+uuid.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true
