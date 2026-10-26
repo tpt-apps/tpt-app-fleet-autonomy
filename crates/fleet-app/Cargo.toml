@@ -1,0 +1,9 @@
+[package]
+name = "fleet-app"
+description = "Desktop application for the TPT Fleet Autonomy Suite (stub)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
